@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор прибутку сонячної електростанції</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Калькулятор прибутку від сонячних електростанцій</h1>
+            <p>Розрахуйте економічну ефективність встановлення системи прогнозування сонячної потужності</p>
+        </div>
+        
+        <div class="tab">
+            <button class="tablinks active" onclick="openTab(event, 'calculator')">
+                <i class="fas fa-calculator"></i> Калькулятор
+            </button>
+        </div>
+        
+        <div id="calculator" class="tabcontent" style="display: block;">
+            <form id="calculatorForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="capacity">Встановлена потужність СЕС (кВт):</label>
+                        <div class="input-container">
+                            <i class="fas fa-solar-panel"></i>
+                            <input type="number" id="capacity" name="capacity" min="0" step="0.1" required value="100">
+                        </div>
+                        <div class="input-help">Загальна встановлена потужність сонячної електростанції</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="generationPerKw">Середньорічна генерація на 1 кВт (кВт·год):</label>
+                        <div class="input-container">
+                            <i class="fas fa-bolt"></i>
+                            <input type="number" id="generationPerKw" name="generationPerKw" min="0" step="0.1" required value="1200">
+                        </div>
+                        <div class="input-help">Для України зазвичай 1100-1400 кВт·год на рік</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tariff">Тариф "зеленої" енергії (грн/кВт·год):</label>
+                        <div class="input-container">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <input type="number" id="tariff" name="tariff" min="0" step="0.01" required value="4.28">
+                        </div>
+                        <div class="input-help">Актуальний тариф для сонячних електростанцій</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="forecastAccuracy">Точність прогнозування без системи (%):</label>
+                        <div class="input-container">
+                            <i class="fas fa-percentage"></i>
+                            <input type="number" id="forecastAccuracy" name="forecastAccuracy" min="0" max="100" step="0.1" required value="75">
+                        </div>
+                        <div class="input-help">Середня точність прогнозування без спецсистеми</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="forecastAccuracyWithSystem">Точність прогнозування з системою (%):</label>
+                        <div class="input-container">
+                            <i class="fas fa-chart-line"></i>
+                            <input type="number" id="forecastAccuracyWithSystem" name="forecastAccuracyWithSystem" min="0" max="100" step="0.1" required value="90">
+                        </div>
+                        <div class="input-help">Точність прогнозування із встановленою системою</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="penaltyRate">Штрафна ставка за небаланс (%):</label>
+                        <div class="input-container">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <input type="number" id="penaltyRate" name="penaltyRate" min="0" max="100" step="0.1" required value="15">
+                        </div>
+                        <div class="input-help">Відсоток штрафу від тарифу за невідповідність прогнозу</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="systemCost">Вартість системи прогнозування (грн):</label>
+                        <div class="input-container">
+                            <i class="fas fa-tags"></i>
+                            <input type="number" id="systemCost" name="systemCost" min="0" step="1000" required value="150000">
+                        </div>
+                        <div class="input-help">Вартість придбання та встановлення системи</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="systemMaintenance">Річне обслуговування системи (грн/рік):</label>
+                        <div class="input-container">
+                            <i class="fas fa-tools"></i>
+                            <input type="number" id="systemMaintenance" name="systemMaintenance" min="0" step="1000" required value="15000">
+                        </div>
+                        <div class="input-help">Вартість обслуговування системи на рік</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="operationYears">Розрахунковий період експлуатації (років):</label>
+                        <div class="input-container">
+                            <i class="fas fa-calendar-alt"></i>
+                            <input type="number" id="operationYears" name="operationYears" min="1" max="30" step="1" required value="10">
+                        </div>
+                        <div class="input-help">Кількість років для розрахунку окупності</div>
+                    </div>
+                </div>
+                
+                <div class="button-container">
+                    <button type="button" id="calculateBtn" class="button" onclick="calculateProfit()">
+                        <i class="fas fa-calculator"></i> Розрахувати прибуток
+                    </button>
+                </div>
+            </form>
+            
+            <div id="results" class="results" style="display: none;">
+                <h3><i class="fas fa-chart-bar"></i> Результати розрахунку</h3>
+                <div id="resultContent"></div>
+            </div>
+        </div>
+        
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
