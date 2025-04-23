@@ -1,124 +1,524 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор прибутку сонячної електростанції</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор прибутку від СЕС</title>
+  <style>
+    :root {
+      --primary-color: #2c6e49;
+      --secondary-color: #4c956c;
+      --accent-color: #fefee3;
+      --bg-color: #f5f5f5;
+      --text-color: #333;
+      --border-radius: 8px;
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', 'Arial', sans-serif;
+    }
+    
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+    
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      margin-bottom: 25px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+    
+    .header p {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+    
+    .calculator-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    
+    .input-section {
+      flex: 1;
+      min-width: 300px;
+      background-color: white;
+      padding: 25px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+    }
+    
+    .input-section h2 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-size: 22px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--accent-color);
+    }
+    
+    .form-group {
+      margin-bottom: 18px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      transition: border 0.3s;
+    }
+    
+    .form-group input:focus {
+      border-color: var(--secondary-color);
+      outline: none;
+    }
+    
+    .calculate-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 10px;
+      transition: background-color 0.3s;
+    }
+    
+    .calculate-btn:hover {
+      background-color: var(--secondary-color);
+    }
+    
+    .results-section {
+      flex: 1;
+      min-width: 300px;
+      background-color: white;
+      padding: 25px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+    }
+    
+    .results-section h2 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-size: 22px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--accent-color);
+    }
+    
+    .result-content {
+      line-height: 1.8;
+    }
+    
+    .result-group {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: var(--border-radius);
+      border-left: 4px solid var(--secondary-color);
+    }
+    
+    .result-group h3 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    
+    .result-label {
+      font-weight: 500;
+    }
+    
+    .result-value {
+      font-weight: 600;
+    }
+    
+    .highlight {
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    .final-result {
+      padding: 15px;
+      margin-top: 15px;
+      background-color: var(--accent-color);
+      border-radius: var(--border-radius);
+      text-align: center;
+    }
+    
+    .final-result h3 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    
+    .final-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    @media (max-width: 768px) {
+      .calculator-container {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Калькулятор прибутку від сонячних електростанцій</h1>
-            <p>Розрахуйте економічну ефективність встановлення системи прогнозування сонячної потужності</p>
+  <div class="app-container">
+    <header class="header">
+      <h1>Калькулятор прибутку від сонячної електростанції</h1>
+      <p>Розрахунок економічного ефекту від покращення точності прогнозування генерації</p>
+    </header>
+    
+    <div class="calculator-container">
+      <section class="input-section">
+        <h2>Вхідні параметри</h2>
+        
+        <div class="form-group">
+          <label for="nominalPower">Номінальна потужність станції, МВт</label>
+          <input type="number" id="nominalPower" value="5" min="0.1" step="0.1">
         </div>
         
-        <div class="tab">
-            <button class="tablinks active" onclick="openTab(event, 'calculator')">
-                <i class="fas fa-calculator"></i> Калькулятор
-            </button>
+        <div class="form-group">
+          <label for="initialSigma">Початкова похибка прогнозу, МВт</label>
+          <input type="number" id="initialSigma" value="0.5" min="0.01" step="0.01">
         </div>
         
-        <div id="calculator" class="tabcontent" style="display: block;">
-            <form id="calculatorForm">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="capacity">Встановлена потужність СЕС (кВт):</label>
-                        <div class="input-container">
-                            <i class="fas fa-solar-panel"></i>
-                            <input type="number" id="capacity" name="capacity" min="0" step="0.1" required value="100">
-                        </div>
-                        <div class="input-help">Загальна встановлена потужність сонячної електростанції</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="generationPerKw">Середньорічна генерація на 1 кВт (кВт·год):</label>
-                        <div class="input-container">
-                            <i class="fas fa-bolt"></i>
-                            <input type="number" id="generationPerKw" name="generationPerKw" min="0" step="0.1" required value="1200">
-                        </div>
-                        <div class="input-help">Для України зазвичай 1100-1400 кВт·год на рік</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="tariff">Тариф "зеленої" енергії (грн/кВт·год):</label>
-                        <div class="input-container">
-                            <i class="fas fa-money-bill-wave"></i>
-                            <input type="number" id="tariff" name="tariff" min="0" step="0.01" required value="4.28">
-                        </div>
-                        <div class="input-help">Актуальний тариф для сонячних електростанцій</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="forecastAccuracy">Точність прогнозування без системи (%):</label>
-                        <div class="input-container">
-                            <i class="fas fa-percentage"></i>
-                            <input type="number" id="forecastAccuracy" name="forecastAccuracy" min="0" max="100" step="0.1" required value="75">
-                        </div>
-                        <div class="input-help">Середня точність прогнозування без спецсистеми</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="forecastAccuracyWithSystem">Точність прогнозування з системою (%):</label>
-                        <div class="input-container">
-                            <i class="fas fa-chart-line"></i>
-                            <input type="number" id="forecastAccuracyWithSystem" name="forecastAccuracyWithSystem" min="0" max="100" step="0.1" required value="90">
-                        </div>
-                        <div class="input-help">Точність прогнозування із встановленою системою</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="penaltyRate">Штрафна ставка за небаланс (%):</label>
-                        <div class="input-container">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <input type="number" id="penaltyRate" name="penaltyRate" min="0" max="100" step="0.1" required value="15">
-                        </div>
-                        <div class="input-help">Відсоток штрафу від тарифу за невідповідність прогнозу</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="systemCost">Вартість системи прогнозування (грн):</label>
-                        <div class="input-container">
-                            <i class="fas fa-tags"></i>
-                            <input type="number" id="systemCost" name="systemCost" min="0" step="1000" required value="150000">
-                        </div>
-                        <div class="input-help">Вартість придбання та встановлення системи</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="systemMaintenance">Річне обслуговування системи (грн/рік):</label>
-                        <div class="input-container">
-                            <i class="fas fa-tools"></i>
-                            <input type="number" id="systemMaintenance" name="systemMaintenance" min="0" step="1000" required value="15000">
-                        </div>
-                        <div class="input-help">Вартість обслуговування системи на рік</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="operationYears">Розрахунковий період експлуатації (років):</label>
-                        <div class="input-container">
-                            <i class="fas fa-calendar-alt"></i>
-                            <input type="number" id="operationYears" name="operationYears" min="1" max="30" step="1" required value="10">
-                        </div>
-                        <div class="input-help">Кількість років для розрахунку окупності</div>
-                    </div>
-                </div>
-                
-                <div class="button-container">
-                    <button type="button" id="calculateBtn" class="button" onclick="calculateProfit()">
-                        <i class="fas fa-calculator"></i> Розрахувати прибуток
-                    </button>
-                </div>
-            </form>
-            
-            <div id="results" class="results" style="display: none;">
-                <h3><i class="fas fa-chart-bar"></i> Результати розрахунку</h3>
-                <div id="resultContent"></div>
-            </div>
+        <div class="form-group">
+          <label for="improvedSigma">Покращена похибка прогнозу, МВт</label>
+          <input type="number" id="improvedSigma" value="0.25" min="0.01" step="0.01">
         </div>
         
+        <div class="form-group">
+          <label for="electricityPrice">Вартість електроенергії, грн/кВт-год</label>
+          <input type="number" id="electricityPrice" value="7" min="0.1" step="0.1">
+        </div>
+        
+        <div class="form-group">
+          <label for="allowedErrorPercent">Допустима похибка без штрафу (δ), %</label>
+          <input type="number" id="allowedErrorPercent" value="5" min="0.1" step="0.1">
+        </div>
+        
+        <button id="calculateBtn" class="calculate-btn">Розрахувати прибуток</button>
+      </section>
+      
+      <section class="results-section">
+        <h2>Результати розрахунків</h2>
+        <div id="resultContainer" class="result-content">
+          <p>Введіть параметри та натисніть "Розрахувати прибуток" для отримання результатів.</p>
+        </div>
+      </section>
     </div>
-    <script src="script.js"></script>
+  </div>
+  
+  <script>
+    // Функції для математичних обчислень
+    const MathUtils = {
+      // Наближений розрахунок функції помилок erf(x)
+      erf: function(x) {
+        const a1 =  0.254829592; const a2 = -0.284496736;
+        const a3 =  1.421413741; const a4 = -1.453152027;
+        const a5 =  1.061405429; const p  =  0.3275911;
+        const sign = (x >= 0) ? 1 : -1; 
+        x = Math.abs(x);
+        const t = 1.0 / (1.0 + p * x);
+        const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * Math.exp(-x * x);
+        return sign * y;
+      },
+      
+      // Функція стандартного нормального розподілу (CDF) - Phi(z)
+      standardNormalCDF: function(z) {
+        return 0.5 * (1 + this.erf(z / Math.SQRT2));
+      },
+      
+      // Функція нормального розподілу CDF для заданих mu та sigma
+      normalCDF: function(x, mu, sigma) {
+        if (sigma <= 0) return (x < mu) ? 0 : 1;
+        return this.standardNormalCDF((x - mu) / sigma);
+      }
+    };
+    
+    const FormatUtils = {
+
+      formatThousands: function(value) {
+        if (isNaN(value)) return 'N/A';
+        return (value / 1000).toFixed(2);
+      },
+      
+      formatPercent: function(value) {
+        return value.toFixed(2);
+      },
+      
+      formatEnergy: function(value) {
+        return value.toFixed(2);
+      }
+    };
+    
+    class ProfitCalculator {
+      constructor() {
+        this.values = {};
+        this.results = {};
+      }
+      
+      collectInputData() {
+        this.values.nominalPower = parseFloat(document.getElementById('nominalPower').value);
+        this.values.initialSigma = parseFloat(document.getElementById('initialSigma').value);
+        this.values.improvedSigma = parseFloat(document.getElementById('improvedSigma').value);
+        this.values.electricityPriceKWh = parseFloat(document.getElementById('electricityPrice').value);
+        this.values.allowedErrorPercent = parseFloat(document.getElementById('allowedErrorPercent').value);
+      }
+      
+      validateInputData() {
+        const { nominalPower, initialSigma, improvedSigma, electricityPriceKWh, allowedErrorPercent } = this.values;
+        
+        if (isNaN(nominalPower) || isNaN(initialSigma) || isNaN(improvedSigma) || 
+            isNaN(electricityPriceKWh) || isNaN(allowedErrorPercent)) {
+          throw new Error("Будь ласка, заповніть всі поля числовими значеннями.");
+        }
+        
+        if (nominalPower <= 0) {
+          throw new Error("Номінальна потужність повинна бути більше нуля.");
+        }
+        
+        if (initialSigma <= 0 || improvedSigma <= 0) {
+          throw new Error("Значення похибок прогнозу повинні бути більше нуля.");
+        }
+        
+        if (electricityPriceKWh <= 0) {
+          throw new Error("Вартість електроенергії повинна бути більше нуля.");
+        }
+        
+        if (allowedErrorPercent < 0) {
+          throw new Error("Допустима похибка не може бути від'ємною.");
+        }
+      }
+      
+      calculateBaseParameters() {
+        const { nominalPower, allowedErrorPercent } = this.values;
+        
+        this.values.pricePerMWh = this.values.electricityPriceKWh * 1000; 
+        this.values.allowedDeviation = nominalPower * (allowedErrorPercent / 100);
+        this.values.lowerBound = nominalPower - this.values.allowedDeviation;
+        this.values.upperBound = nominalPower + this.values.allowedDeviation;
+        this.values.hours = 24;
+        this.values.totalEnergyPerDay = nominalPower * this.values.hours;
+      }
+      
+      // Розрахунок для початкового стану 
+      calculateInitialState() {
+        const { lowerBound, upperBound, nominalPower, initialSigma, totalEnergyPerDay, pricePerMWh } = this.values;
+        
+        // Частка енергії без небалансів
+        const deltaW1_raw = MathUtils.normalCDF(upperBound, nominalPower, initialSigma) - 
+                          MathUtils.normalCDF(lowerBound, nominalPower, initialSigma);
+        const deltaW1_percent = deltaW1_raw * 100;
+        
+        // Енергія без небалансів та прибуток від неї
+        const W1 = totalEnergyPerDay * deltaW1_raw;
+        const Pi1 = W1 * pricePerMWh;
+        
+        // Енергія з небалансами та штраф за неї
+        const W2 = totalEnergyPerDay * (1 - deltaW1_raw);
+        const LLI1 = W2 * pricePerMWh;
+        
+        // Загальний результат
+        const Result1 = Pi1 - LLI1;
+        
+        this.results.initial = {
+          deltaW_raw: deltaW1_raw,
+          deltaW_percent: deltaW1_percent,
+          energyNoImbalance: W1,
+          profitNoImbalance: Pi1,
+          energyWithImbalance: W2,
+          penaltyForImbalance: LLI1,
+          totalResult: Result1
+        };
+      }
+      
+      // Розрахунок для покращеного стану 
+      calculateImprovedState() {
+        const { lowerBound, upperBound, nominalPower, improvedSigma, totalEnergyPerDay, pricePerMWh } = this.values;
+        
+        // Частка енергії без небалансів 
+        const deltaW2_raw = MathUtils.normalCDF(upperBound, nominalPower, improvedSigma) - 
+                          MathUtils.normalCDF(lowerBound, nominalPower, improvedSigma);
+        const deltaW2_percent = deltaW2_raw * 100;
+        
+        // Енергія без небалансів та прибуток від неї 
+        const W3 = totalEnergyPerDay * deltaW2_raw;
+        const Pi2 = W3 * pricePerMWh;
+        
+        // Енергія з небалансами та штраф за неї 
+        const W4 = totalEnergyPerDay * (1 - deltaW2_raw);
+        const LLI2 = W4 * pricePerMWh;
+        
+        // Загальний результат 
+        const Result2 = Pi2 - LLI2;
+        
+        this.results.improved = {
+          deltaW_raw: deltaW2_raw,
+          deltaW_percent: deltaW2_percent,
+          energyNoImbalance: W3,
+          profitNoImbalance: Pi2,
+          energyWithImbalance: W4,
+          penaltyForImbalance: LLI2,
+          totalResult: Result2
+        };
+      }
+      
+      calculateEffect() {
+        this.results.effect = {
+          additionalProfit: this.results.improved.totalResult - this.results.initial.totalResult
+        };
+      }
+      
+      calculate() {
+        this.collectInputData();
+        this.validateInputData();
+        this.calculateBaseParameters();
+        this.calculateInitialState();
+        this.calculateImprovedState();
+        this.calculateEffect();
+        
+        return this.results;
+      }
+    }
+    
+    class ResultRenderer {
+      constructor(containerId) {
+        this.container = document.getElementById(containerId);
+      }
+      
+      renderError(errorMessage) {
+        this.container.innerHTML = `
+          <div class="result-group" style="border-left-color: #e74c3c;">
+            <h3 style="color: #e74c3c;">Помилка</h3>
+            <p>${errorMessage}</p>
+          </div>
+        `;
+      }
+      
+      renderResults(results, inputValues) {
+        const { initial, improved, effect } = results;
+        
+        this.container.innerHTML = `
+          <div class="result-group">
+            <h3>Початковий стан (σ = ${inputValues.initialSigma.toFixed(2)} МВт)</h3>
+            <div class="result-row">
+              <span class="result-label">Частка енергії без небалансів (δ<sub>W1</sub>):</span>
+              <span class="result-value">${FormatUtils.formatPercent(initial.deltaW_percent)} %</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">Енергія без небалансів (W<sub>1</sub>):</span>
+              <span class="result-value">${FormatUtils.formatEnergy(initial.energyNoImbalance)} МВт-год</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">Прибуток від W<sub>1</sub> (Π<sub>1</sub>):</span>
+              <span class="result-value">${FormatUtils.formatThousands(initial.profitNoImbalance)} тис. грн</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">Енергія з небалансами (W<sub>2</sub>):</span>
+              <span class="result-value">${FormatUtils.formatEnergy(initial.energyWithImbalance)} МВт-год</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">Штраф за W<sub>2</sub> (LLI<sub>1</sub>):</span>
+              <span class="result-value">${FormatUtils.formatThousands(initial.penaltyForImbalance)} тис. грн</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label highlight">Загальний результат 1:</span>
+              <span class="result-value highlight">${FormatUtils.formatThousands(initial.totalResult)} тис. грн</span>
+            </div>
+          </div>
+          
+          <div class="result-group">
+            <h3>Покращений стан (σ = ${inputValues.improvedSigma.toFixed(2)} МВт)</h3>
+            <div class="result-row">
+              <span class="result-label">Частка енергії без небалансів (δ<sub>W2</sub>):</span>
+              <span class="result-value">${FormatUtils.formatPercent(improved.deltaW_percent)} %</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">Енергія без небалансів (W<sub>3</sub>):</span>
+              <span class="result-value">${FormatUtils.formatEnergy(improved.energyNoImbalance)} МВт-год</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">Прибуток від W<sub>3</sub> (Π<sub>2</sub>):</span>
+              <span class="result-value">${FormatUtils.formatThousands(improved.profitNoImbalance)} тис. грн</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">Енергія з небалансами (W<sub>4</sub>):</span>
+              <span class="result-value">${FormatUtils.formatEnergy(improved.energyWithImbalance)} МВт-год</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">Штраф за W<sub>4</sub> (LLI<sub>2</sub>):</span>
+              <span class="result-value">${FormatUtils.formatThousands(improved.penaltyForImbalance)} тис. грн</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label highlight">Загальний результат 2:</span>
+              <span class="result-value highlight">${FormatUtils.formatThousands(improved.totalResult)} тис. грн</span>
+            </div>
+          </div>
+          
+          <div class="final-result">
+            <h3>Ефект від вдосконалення</h3>
+            <div class="final-value">
+              Додатковий прибуток: ${FormatUtils.formatThousands(effect.additionalProfit)} тис. грн
+            </div>
+          </div>
+        `;
+      }
+    }
+    
+    // Ініціалізація калькулятора
+    document.addEventListener('DOMContentLoaded', function() {
+      const calculator = new ProfitCalculator();
+      const renderer = new ResultRenderer('resultContainer');
+      
+      document.getElementById('calculateBtn').addEventListener('click', function() {
+        try {
+          const results = calculator.calculate();
+          renderer.renderResults(results, calculator.values);
+        } catch (error) {
+          renderer.renderError(error.message);
+        }
+      });
+    });
+  </script>
 </body>
 </html>
